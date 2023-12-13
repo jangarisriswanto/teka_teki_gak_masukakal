@@ -136,7 +136,7 @@
         </div>
       </div>
     </main>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       // List kata yang akan digunakan
       const originalWords = [
@@ -186,14 +186,16 @@
         const correctWord = words[currentWordIndex].toLowerCase();
 
         if (userGuess === correctWord) {
-          alert("Benar!");
-
+          Swal.fire({
+            title: "Benar",
+            icon: "success", // Ganti dengan ikon yang valid
+          });
           // Pindah ke kata selanjutnya atau tampilkan pesan kemenangan
           if (currentWordIndex < words.length - 1) {
             currentWordIndex++;
             initGame();
           } else {
-            alert("Selamat! Anda berhasil menyusun semua kata.");
+            Swal.fire("Selamat! Anda berhasil menyusun semua kata.");
             resetButton.style.display = "block";
             content.style.display = "none";
             ulang.style.display = "block";
@@ -202,7 +204,10 @@
             currentWordIndex = 0;
           }
         } else {
-          alert("Salah. Coba lagi!");
+          Swal.fire({
+            icon: "error",
+            title: "Salah. Coba lagi!",
+          });
         }
 
         // Bersihkan input
