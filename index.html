@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game with Automatic Sound</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <style>
+      body {
+        background-color: aqua;
+        height: 100vh;
+        margin: 0;
+      }
+      .card {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .musik {
+        text-align: end;
+        padding: 10px;
+      }
+      .musik a {
+        padding: 5px;
+        margin: 10px;
+      }
+      .card a {
+        text-decoration: none;
+        border: 1px solid white;
+        background-color: beige;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 5rem;
+        height: 3rem;
+        border-radius: 10px;
+      }
+      .card a:hover {
+        background-color: cadetblue;
+        transform: scale(0.9);
+      }
+      .judul {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="judul">GAME TEKA-TEKI YANG SANGAT GAK NGOTAK</h1>
+    <audio id="background-music" loop>
+      <source src="musik.mp3" type="audio/mp3" />
+    </audio>
+    <div class="card">
+      <a href="menu.html">MAIN</a>
+    </div>
+    <script>
+      const backgroundMusic = document.getElementById("background-music");
+
+      // Periksa status suara dari localStorage
+      const isSoundOn = localStorage.getItem("isSoundOn") === "true";
+
+      // Setel status suara dan mulai musik sesuai dengan nilai dari localStorage
+      if (isSoundOn) {
+        backgroundMusic.play().catch(() => {
+          // Handling jika browser memblokir pemutaran otomatis
+          console.warn(
+            "Pemutaran otomatis diblokir. Tunggu tindakan pengguna pertama kali."
+          );
+        });
+      }
+
+      // Tambahkan event listener untuk mengatur suara setelah tindakan pengguna pertama kali
+      document.addEventListener("click", function firstUserAction() {
+        document.removeEventListener("click", firstUserAction);
+
+        if (!isSoundOn) {
+          backgroundMusic.play().catch(() => {
+            console.warn(
+              "Pemutaran otomatis diblokir. Aktifkan suara secara manual."
+            );
+          });
+        }
+
+        // Simpan status suara ke localStorage
+        localStorage.setItem("isSoundOn", "true");
+      });
+    </script>
+  </body>
+</html>

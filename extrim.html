@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Menyusun Kata</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+      }
+      body {
+        background-color: chartreuse;
+        min-height: 100vh;
+      }
+      .kembali {
+        margin: 1rem 2rem;
+        font-family: sans-serif;
+        font-weight: 500;
+        font-size: 1rem;
+      }
+      .kembali a {
+        border: 1px solid black;
+        background-color: brown;
+        padding: 0.5rem;
+        border-radius: 5px;
+        color: white;
+      }
+      h1 {
+        text-align: center;
+        font-size: 2rem;
+        font-family: sans-serif;
+        font-weight: 600;
+        margin: 5rem;
+      }
+      main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 90%;
+      }
+      #game-container {
+        text-align: center;
+      }
+      #word-container {
+        border: 1px solid black;
+        background-color: antiquewhite;
+        margin-bottom: 5rem;
+        border-radius: 5px;
+        height: 3rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #user-input {
+        border: none;
+        height: 1.5rem;
+        background-color: bisque;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .cek {
+        width: 5rem;
+        height: 1.5rem;
+        border: none;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: cornflowerblue;
+        font-family: sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .cek:hover {
+        background-color: dodgerblue;
+        transform: scale(0.9);
+      }
+      #reset-button,
+      .ulang {
+        width: 10rem;
+        height: 3rem;
+        border: none;
+        border: 1px solid black;
+        border-radius: 5px;
+        background-color: cornflowerblue;
+        font-family: sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        display: none;
+      }
+      #reset-button:hover {
+        background-color: dodgerblue;
+        transform: scale(0.9);
+      }
+      .musik {
+        text-align: end;
+        padding: 10px;
+      }
+      .musik a {
+        padding: 5px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="background-music" loop autoplay>
+      <source src="musik.mp3" type="audio/mp3" />
+    </audio>
+    <div class="kembali">
+      <a href="menu.html">kembali</a>
+    </div>
+    <h1>tebak kosa kata</h1>
+    <main>
+      <div id="game-container">
+        <div class="content">
+          <div id="word-container"></div>
+          <input
+            type="text"
+            id="user-input"
+            autofocus
+            placeholder="Susun kata disini"
+          />
+          <button onclick="checkWord()" class="cek">Cek</button>
+        </div>
+        <div>
+          <button class="ulang">score : 100</button>
+          <button id="reset-button" onclick="resetGame()">Ulangi Game</button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // List kata yang akan digunakan
+      const originalWords = [
+        "sekolah-yang-sangat-membosankan",
+        "batu-habis-dimakan-air-sungai-diciulan-daerah-pegunungan-tinggi",
+        "nenek-sedang-duduk-ditaman-sambil-makan-kue-buatan-saya-dari-buah-buahan",
+        "si nona dengan kecantikan nya sangat menggoda hati ku",
+        "spongbob-skuerpen dan upin&ipin bertarung-makan-daging-ayam",
+        "orang yang serakah akan tertimpa balasan nya nanti dan itu benar terjadi nya ",
+      ];
+      let words = [...originalWords];
+
+      // Ambil elemen-elemen HTML yang dibutuhkan
+      const wordContainer = document.getElementById("word-container");
+      const userInput = document.getElementById("user-input");
+      const resetButton = document.getElementById("reset-button");
+      const content = document.querySelector(".content");
+      const ulang = document.querySelector(".ulang");
+
+      let currentWordIndex = 0;
+      let currentWord;
+
+      // Inisialisasi permainan
+      function initGame() {
+        currentWord = shuffleWord(words[currentWordIndex]);
+        displayWord();
+      }
+
+      // Fungsi untuk mengacak kata
+      function shuffleWord(word) {
+        return word
+          .split("")
+          .sort(function () {
+            return 0.5 - Math.random();
+          })
+          .join("");
+      }
+
+      // Tampilkan kata pada layar
+      function displayWord() {
+        wordContainer.textContent = currentWord;
+      }
+
+      // Cek jawaban pengguna
+      function checkWord() {
+        const userGuess = userInput.value.toLowerCase();
+        const correctWord = words[currentWordIndex].toLowerCase();
+
+        if (userGuess === correctWord) {
+          alert("Benar!");
+
+          // Pindah ke kata selanjutnya atau tampilkan pesan kemenangan
+          if (currentWordIndex < words.length - 1) {
+            currentWordIndex++;
+            initGame();
+          } else {
+            alert("Selamat! Anda berhasil menyusun semua kata.");
+            resetButton.style.display = "block";
+            ulang.style.display = "block";
+            content.style.display = "none";
+            // Setel ulang array kata ke kondisi awal
+            words = [...originalWords];
+            currentWordIndex = 0;
+          }
+        } else {
+          alert("Salah. Coba lagi!");
+        }
+
+        // Bersihkan input
+        userInput.value = "";
+      }
+
+      // Ulang permainan
+      function resetGame() {
+        // Reset indeks dan kata-kata
+        currentWordIndex = 0;
+
+        // Isi ulang kata-kata
+        words = [...originalWords];
+
+        // Mulai ulang permainan
+        initGame();
+
+        // Sembunyikan tombol ulang
+        resetButton.style.display = "none";
+        ulang.style.display = "none";
+        content.style.display = "block";
+      }
+
+      // Panggil fungsi inisialisasi
+      initGame();
+      // Ambil elemen audio
+      const backgroundMusic = document.getElementById("background-music");
+
+      // Ambil elemen icon musik
+      const musicIcon = document.getElementById("musicIcon");
+      const icon = document.getElementById("icon");
+
+      // Periksa status musik dari localStorage
+      const isMusicPlaying = localStorage.getItem("isMusicPlaying");
+
+      // Atur status musik dan ikon sesuai dengan nilai dari localStorage
+      if (isMusicPlaying === "true") {
+        backgroundMusic.play().catch(() => {
+          console.warn(
+            "Pemutaran otomatis diblokir. Tunggu tindakan pengguna pertama kali."
+          );
+        });
+        icon.classList.remove("bi-volume-mute-fill");
+        icon.classList.add("bi-volume-up-fill");
+      }
+
+      // Tambahkan event listener untuk mengatur berhenti dan mulai musik
+      musicIcon.addEventListener("click", function () {
+        if (backgroundMusic.paused) {
+          backgroundMusic.play().catch(() => {
+            console.warn(
+              "Pemutaran otomatis diblokir. Aktifkan suara secara manual."
+            );
+          });
+          icon.classList.remove("bi-volume-mute-fill");
+          icon.classList.add("bi-volume-up-fill");
+          // Simpan status musik ke localStorage
+          localStorage.setItem("isMusicPlaying", "true");
+        } else {
+          backgroundMusic.pause();
+          icon.classList.remove("bi-volume-up-fill");
+          icon.classList.add("bi-volume-mute-fill");
+          // Simpan status musik ke localStorage
+          localStorage.setItem("isMusicPlaying", "false");
+        }
+      });
+    </script>
+  </body>
+</html>
